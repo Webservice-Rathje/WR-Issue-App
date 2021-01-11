@@ -10,7 +10,7 @@ class _Home extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: getAppBar(),
+      appBar: getAppBar(context),
       bottomNavigationBar: CustomBottonNavbar().getNavbar(0, context),
     );
   }

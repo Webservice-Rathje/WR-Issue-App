@@ -1,8 +1,14 @@
 
 import 'package:flutter/material.dart';
 
-AppBar getAppBar() {
+AppBar getAppBar(BuildContext context) {
   return new AppBar(
+    actions: <Widget>[
+      IconButton(
+        icon: Icon(Icons.settings),
+        onPressed: () { print("Opening settings menu"); },
+      )
+    ],
     title: Text("WR-Issue",
       style: TextStyle(
         fontSize: 25.0,

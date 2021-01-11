@@ -35,7 +35,7 @@ class CustomBottonNavbar {
       onTap: onTabClicked,
       items: [
         BottomNavigationBarItem(
-          icon: new Icon(Icons.stacked_bar_chart),
+          icon: new Icon(Icons.home),
           title: new Text('Home'),
         ),
         BottomNavigationBarItem(
@@ -43,8 +43,8 @@ class CustomBottonNavbar {
           title: new Text('Issue hinzufügen'),
         ),
         BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            title: Text('Einstellungen')
+            icon: Icon(Icons.access_time),
+            title: Text('Verlauf')
         )
       ],
     );

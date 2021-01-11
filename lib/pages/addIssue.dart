@@ -11,7 +11,7 @@ class _AddIssue extends State<AddIssue> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: getAppBar(),
+      appBar: getAppBar(context),
       bottomNavigationBar: CustomBottonNavbar().getNavbar(1, context),
     );
   }
