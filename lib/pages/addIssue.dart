@@ -13,7 +13,6 @@ class _AddIssue extends State<AddIssue> {
     return new Scaffold(
       appBar: getAppBar(),
       bottomNavigationBar: CustomBottonNavbar().getNavbar(1, context),
-      body: Text("Sieg heil mein Freund"),
     );
   }
 
