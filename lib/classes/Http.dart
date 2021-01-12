@@ -9,30 +9,55 @@ class APICommunication {
   String APIVersion = "v1/";
   var file = new FileUtils();
   checkKey() async{
-    String data = await file.read().toString();
-    if(!data.contains("key")){
+    var data = await file.read();
+    if(await file.checkJSON(data) == true){
+      var dataDecode = jsonDecode(data);
+      if(dataDecode["key"] == null){
+        String url = baseUrl + APIVersion + "mobile/generateKey";
+        try {
+          var resp = await http.get(url);
+          String ans = resp.body;
+          var ansDecode = jsonDecode(ans);
+          var toWrite = {
+            "key": ansDecode["key"],
+            "token": null
+          };
+          file.write(jsonEncode(toWrite));
+          print("key added");
+        }
+        catch(e){
+          print(e);
+        }
+      }
+      else{
+        print("key already set");
+      }
+    }
+    else{
       String url = baseUrl + APIVersion + "mobile/generateKey";
       try {
         var resp = await http.get(url);
         String ans = resp.body;
         var ansDecode = jsonDecode(ans);
-        data = '{"key": "' + ansDecode["key"] + '"}';
-        file.write(data);
-        return "key added";
+        var toWrite = {
+          "key": ansDecode["key"],
+          "token": null
+        };
+        file.write(jsonEncode(toWrite));
+        print("key added");
       }
       catch(e){
         print(e);
       }
     }
-    else{
-      return "key already set";
-    }
   }
   getToken() async{
     var data = await file.read();
-    if(!data.toString().contains("token")){
+    if(await file.checkJSON(data) == true){
       var dataDecode = jsonDecode(data);
-      String key = dataDecode["key"];
+      if(dataDecode["token"] == false){
+        delToken();
+      }
       String url = baseUrl + APIVersion + "mobile/getToken";
       try{
         var resp = await http.post(
@@ -41,50 +66,90 @@ class APICommunication {
               'Content-Type': 'application/json; charset=UTF-8',
             },
             body: jsonEncode(<String, String>{
-              'key': key,
+              'key': dataDecode["key"],
             })
         );
         var ans = resp.body;
-        print(ans);
         var ansDecode = jsonDecode(ans);
+        print(ansDecode['token']);
         var to_save = {
-          'key': key,
+          'key': dataDecode["key"],
           'token': ansDecode['token'],
         };
         var encode_to_save = jsonEncode(to_save);
         file.write(encode_to_save);
+        print("token set");
       }
       catch(e){
-        print(e);
+        print("e");
       }
     }
     else{
-      print("token already set");
+      print("!!!ERROR!!!");
     }
   }
   delToken() async{
     var data = await file.read();
     var dataDecode = jsonDecode(data);
-    String key = dataDecode["key"];
-    String token = dataDecode["token"];
+    String url = baseUrl + APIVersion + "mobile/deleteToken";
     try{
-      String url = baseUrl + APIVersion + "mobile/deleteToken";
       var resp = await http.post(
           url,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
           body: jsonEncode(<String, String>{
-            'key': key,
-            'token': token
+            'key': dataDecode["key"],
+            'token': dataDecode["token"]
           })
       );
       print(resp.body);
-      data = '{"key": "' + key + '"}';
-      file.write(data);
+      var to_save = {
+        "key": dataDecode["key"],
+        "token": null
+      };
+      file.write(jsonEncode(to_save));
+      print("token deleted");
     }
     catch(e){
       print(e);
     }
+  }
+  sendinfo(lat, long, text) async{
+    var data = await file.read();
+    if(await file.checkJSON(data) == true){
+      var dataDecode = jsonDecode(data);
+      String url = baseUrl + APIVersion + "mobile/sendInformation";
+      var body = {
+        'key': dataDecode["key"],
+        'token': dataDecode["token"],
+        'information': {
+          'lat': lat,
+          'long': long,
+          'text': text,
+        }
+      };
+      try {
+        var resp = await http.post(
+            url,
+            headers: <String, String>{
+              'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: jsonEncode(body)
+        );
+        var ans = resp.body;
+        var ansDecode = jsonDecode(ans);
+        print(ansDecode["image_handshake"]);
+      }
+      catch(e){
+        print(e);
+      }
+    }
+    else{
+      return("!!!ERROR!!!");
+    }
+  }
+  imageUpload(handshake) async{
+
   }
 }

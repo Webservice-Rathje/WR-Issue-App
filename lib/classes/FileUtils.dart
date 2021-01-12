@@ -1,8 +1,6 @@
-import 'dart:convert';
-
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
-
+import 'dart:convert';
 class FileUtils{
   Future<String> get _localPath async {
     try {
@@ -39,5 +37,14 @@ class FileUtils{
   Future write(data) async {
     final file = await _localFile;
     file.writeAsString(data);
+  }
+  Future checkJSON(data) async{
+    try{
+      jsonDecode(data);
+      return true;
+    }
+    catch(e){
+      return false;
+    }
   }
 }
