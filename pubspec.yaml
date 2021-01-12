@@ -27,6 +27,7 @@ dependencies:
   path_provider: ^1.6.27
   http: ^0.12.2
   permission_handler: ^5.0.1+1
+  geolocator: ^6.1.13
 
 
   # The following adds the Cupertino Icons font to your application.
