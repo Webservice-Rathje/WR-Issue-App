@@ -41,39 +41,42 @@ class _AddIssue extends State<AddIssue> {
   }
 
   void InitDisplay() {
-    display = [
-      new Container(
-        margin: EdgeInsets.only(top: 10),
-        child: Text("Issue melden!", style: TextStyle(
-          fontSize: 35,
-        ), ),
-      ),
-      new Container(
-        margin: EdgeInsets.only(top: 20),
-        child: Text("Bitte wählen sie eine Quelle aus:", style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontFamily: "Raleway",
-            fontSize: 14
+    if(_image == null){
+      display = [
+        new Container(
+          margin: EdgeInsets.only(top: 10),
+          child: Text("Issue melden!", style: TextStyle(
+            fontSize: 35,
+          ), ),
+        ),
+        new Container(
+          margin: EdgeInsets.only(top: 20),
+          child: Text("Bitte wählen sie eine Quelle aus:", style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontFamily: "Raleway",
+              fontSize: 14
+          ),),
+        ),
+        new RaisedButton(onPressed: shotImage, child: Text("Kamera", style: TextStyle(
+            fontSize: 15
         ),),
-      ),
-      new RaisedButton(onPressed: shotImage, child: Text("Kamera", style: TextStyle(
-          fontSize: 15
-      ),),
-        padding: EdgeInsets.only(right: 100, left: 100, top: 10, bottom: 10),),
-      new RaisedButton(onPressed: selectFromLibary, child: Text("Galerie", style: TextStyle(
-          fontSize: 15
-      ),),
-        padding: EdgeInsets.only(right: 100, left: 100, top: 10, bottom: 10),),
-    ];
+          padding: EdgeInsets.only(right: 100, left: 100, top: 10, bottom: 10),),
+        new RaisedButton(onPressed: selectFromLibary, child: Text("Galerie", style: TextStyle(
+            fontSize: 15
+        ),),
+          padding: EdgeInsets.only(right: 100, left: 100, top: 10, bottom: 10),),
+      ];
+    }
+    else{
+      display = [
+        new Text("nen random text")
+      ];
+    }
+
   }
 
   void InitAfterTookImage() {
-    print("Irgendwas läuft schief mein Freund");
-      setState(() {
-        display = [
-          new Text("nen random text")
-        ];
-      });
+      setState(() {});
   }
 
   Future shotImage() async {
@@ -88,7 +91,6 @@ class _AddIssue extends State<AddIssue> {
       InitAfterTookImage();
     });
   }
-
   Future selectFromLibary() async {
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
 
