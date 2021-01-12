@@ -3,7 +3,9 @@ import 'package:app/components/appbar.dart';
 import 'package:app/components/navigationbar.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-
+import 'package:geolocator/geolocator.dart';
+import 'dart:async';
+import '../classes/FileUtils.dart';
 
 class AddIssue extends StatefulWidget {
   _AddIssue createState() => _AddIssue();
@@ -12,9 +14,16 @@ class AddIssue extends StatefulWidget {
 class _AddIssue extends State<AddIssue> {
   File _image;
   final picker = ImagePicker();
-
+  var file = new FileUtils();
   @override
   Widget build(BuildContext context) {
+    void checkGPS() async{
+      LocationPermission permission = await Geolocator.checkPermission();
+      if(permission == LocationPermission.denied){
+        await Geolocator.requestPermission();
+      }
+    }
+    checkGPS();
     return new Scaffold(
       appBar: getAppBar(context),
       bottomNavigationBar: CustomBottonNavbar().getNavbar(1, context),
@@ -41,5 +50,5 @@ class _AddIssue extends State<AddIssue> {
       }
     });
   }
-
+  StreamSubscription<Position> positionStream = Geolocator.getPositionStream().listen((Position position) {});
 }
