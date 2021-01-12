@@ -3,40 +3,41 @@ import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 
-class FileUtils {
-  String filename;
-  String root;
-  File file;
-
-  Future<void> init(name) async {
-    filename = name;
-    final directory = await getApplicationDocumentsDirectory();
-    root = directory.path;
-    if (! await this.exists()){
-      this.createFile();
+class FileUtils{
+  Future<String> get _localPath async {
+    try {
+      var directory = await getApplicationDocumentsDirectory();
+      return directory.path;
+    } catch (e){
+      print(e);
     }
-    file = File(root + filename);
+    return null;
   }
-
-  Future<bool> exists() async {
-    return await File(root + filename).exists();
+  Future<File> get _localFile async {
+    try {
+      final path = await _localPath;
+      if (!File('$path/data.json').existsSync()) {
+        await File('$path/data.json').create(recursive: true);
+      }
+      return File('$path/data.json');
+    } catch (e){
+      print(e);
+    }
+    return null;
   }
+  Future read() async {
+    try {
+      final file = await _localFile;
 
-  Future<void> createFile() async {
-    await File(root + filename).create(recursive: true);
+      // Read the file.
+      String contents = await file.readAsString();
+      return contents;
+    } catch (e) {
+      print(e);
+    }
   }
-
-  Future<String> getContent() async {
-    return await file.readAsString(encoding: utf8);
+  Future write(data) async {
+    final file = await _localFile;
+    file.writeAsString(data);
   }
-
-  Future<void> writeData(data) async {
-    await file.writeAsString(data, encoding: utf8, mode: FileMode.write);
-  }
-
-  Future<void> appendData(data) async {
-    await file.writeAsString(data, encoding: utf8, mode: FileMode.append);
-  }
-
-
 }
