@@ -55,9 +55,7 @@ class APICommunication {
     var data = await file.read();
     if(await file.checkJSON(data) == true){
       var dataDecode = jsonDecode(data);
-      if(dataDecode["token"] == false){
-        delToken();
-      }
+      await delToken();
       String url = baseUrl + APIVersion + "mobile/getToken";
       try{
         var resp = await http.post(
@@ -71,7 +69,6 @@ class APICommunication {
         );
         var ans = resp.body;
         var ansDecode = jsonDecode(ans);
-        print(ansDecode['token']);
         var to_save = {
           'key': dataDecode["key"],
           'token': ansDecode['token'],
@@ -103,7 +100,6 @@ class APICommunication {
             'token': dataDecode["token"]
           })
       );
-      print(resp.body);
       var to_save = {
         "key": dataDecode["key"],
         "token": null
