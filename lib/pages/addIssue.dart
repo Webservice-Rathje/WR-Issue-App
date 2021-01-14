@@ -16,6 +16,7 @@ class _AddIssue extends State<AddIssue> {
   List<Widget> display;
   final picker = ImagePicker();
   bool PictureTaken = false;
+  final TextController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +34,8 @@ class _AddIssue extends State<AddIssue> {
       appBar: getAppBar(context),
       bottomNavigationBar: CustomBottonNavbar().getNavbar(1, context),
       body: Center(
-        child: Column(
+        child: ListView(
+          padding: EdgeInsets.symmetric(horizontal: 20),
           children: display,
         ),
       ),
@@ -44,10 +46,10 @@ class _AddIssue extends State<AddIssue> {
     if(_image == null){
       display = [
         new Container(
-          margin: EdgeInsets.only(top: 10),
+          margin: EdgeInsets.only(top: 10, left: 20, right: 20),
           child: Text("Issue melden!", style: TextStyle(
             fontSize: 35,
-          ), ),
+          ), textAlign: TextAlign.center, ),
         ),
         new Container(
           margin: EdgeInsets.only(top: 20),
@@ -69,7 +71,36 @@ class _AddIssue extends State<AddIssue> {
     }
     else{
       display = [
-        new Text("nen random text")
+        new Container(
+          margin: EdgeInsets.only(top: 10),
+          child: Text("Issue melden!", style: TextStyle(
+            fontSize: 35,
+          ), ),
+        ),
+        new Container(child: Image.file(_image, height: 300,), margin: EdgeInsets.only(top: 15),),
+        new RaisedButton(onPressed: () async {
+          setState(() {
+            _image = null;
+          });
+        }, child: Text("erneut aufnehmen"),),
+        new Container(
+          margin: EdgeInsets.only(top: 20),
+          child: Text("Bitte geben sie ihre Daten an:", style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontFamily: "Raleway",
+              fontSize: 14
+          ),),
+        ),
+        new Container(
+          margin: EdgeInsets.only(top: 5),
+          child: TextFormField(controller: TextController, maxLines: null, maxLength: 1024, decoration: InputDecoration(
+            border: OutlineInputBorder(),
+            labelText: "Nachricht"
+          ),),
+        ),
+        new RaisedButton(onPressed: () {
+          // Server communication
+        }, child: Text("Fehler melden", style: TextStyle(color: Colors.white),), color: Colors.pink,)
       ];
     }
 
