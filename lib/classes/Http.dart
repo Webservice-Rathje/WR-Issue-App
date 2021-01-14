@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import '../classes/FileUtils.dart';
 import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart' as dio;
 
 
 class APICommunication {
@@ -111,7 +112,7 @@ class APICommunication {
       print(e);
     }
   }
-  sendinfo(lat, long, text) async{
+  sendinfo(String lat,String long,String text, File pic) async{
     var data = await file.read();
     if(await file.checkJSON(data) == true){
       var dataDecode = jsonDecode(data);
@@ -134,8 +135,11 @@ class APICommunication {
             body: jsonEncode(body)
         );
         var ans = resp.body;
+        print(resp.body);
         var ansDecode = jsonDecode(ans);
         print(ansDecode["image_handshake"]);
+        print("fertig");
+        imageUpload(ansDecode["image_handshake"], pic);
       }
       catch(e){
         print(e);
@@ -145,7 +149,17 @@ class APICommunication {
       return("!!!ERROR!!!");
     }
   }
-  imageUpload(handshake) async{
-
+  imageUpload(String handshake, File pic) async{
+    print(pic.path);
+    dio.FormData data = dio.FormData.fromMap({
+      "document": await dio.MultipartFile.fromFile(
+        pic.path,
+      ),
+    });
+    dio.Dio req = new dio.Dio();
+    String url = baseUrl + APIVersion + "mobile/uploadImage/" + handshake;
+    req.post(url, data: data)
+        .then((response) => print(response))
+        .catchError((error) => print(error));
   }
 }

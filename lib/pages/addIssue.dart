@@ -5,6 +5,7 @@ import 'package:app/components/navigationbar.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
+import '../classes/Http.dart';
 
 
 class AddIssue extends StatefulWidget {
@@ -12,6 +13,7 @@ class AddIssue extends StatefulWidget {
 }
 
 class _AddIssue extends State<AddIssue> {
+  var api = new APICommunication();
   File _image;
   List<Widget> display;
   final picker = ImagePicker();
@@ -98,8 +100,17 @@ class _AddIssue extends State<AddIssue> {
             labelText: "Nachricht"
           ),),
         ),
-        new RaisedButton(onPressed: () {
-          // Server communication
+        new RaisedButton(onPressed: () async{
+          Position pos = await Geolocator.getLastKnownPosition();
+
+          File pic = _image;
+          String lat = pos.latitude.toString();
+          String long = pos.longitude.toString();
+          String msg = TextController.text;
+          //await api.checkKey();
+          await api.getToken();
+          await api.sendinfo(lat, long, msg, pic);
+
         }, child: Text("Fehler melden", style: TextStyle(color: Colors.white),), color: Colors.pink,)
       ];
     }
