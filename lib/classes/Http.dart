@@ -163,3 +163,20 @@ class APICommunication {
         .catchError((error) => print(error));
   }
 }
+class Startup {
+  ping() async{
+    try{
+      var google = await http.get("https://google.de");
+      var api = await http.get("https://api.wr-issue.de");
+      if(api.statusCode.toString() == "200" && google.statusCode.toString() == "200"){
+        return true;
+      }
+      else{
+        return false;
+      }
+    }
+    catch(e){
+      return false;
+    }
+  }
+}

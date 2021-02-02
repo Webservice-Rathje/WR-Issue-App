@@ -23,6 +23,8 @@ class _AddIssue extends State<AddIssue> {
   @override
   Widget build(BuildContext context) {
     void checkGPS() async{
+      var startup = new Startup();
+      print(await startup.ping());
       LocationPermission permission = await Geolocator.checkPermission();
       if(permission == LocationPermission.denied){
         await Geolocator.requestPermission();
@@ -32,6 +34,7 @@ class _AddIssue extends State<AddIssue> {
     if (!PictureTaken) {
       InitDisplay();
     }
+
     return new Scaffold(
       appBar: getAppBar(context),
       bottomNavigationBar: CustomBottonNavbar().getNavbar(1, context),
@@ -102,12 +105,12 @@ class _AddIssue extends State<AddIssue> {
         ),
         new RaisedButton(onPressed: () async{
           Position pos = await Geolocator.getLastKnownPosition();
-
+          print("test");
           File pic = _image;
           String lat = pos.latitude.toString();
           String long = pos.longitude.toString();
           String msg = TextController.text;
-          //await api.checkKey();
+          await api.checkKey();
           await api.getToken();
           await api.sendinfo(lat, long, msg, pic);
 
