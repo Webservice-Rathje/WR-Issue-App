@@ -9,11 +9,36 @@ class APICommunication {
   String baseUrl = "https://api.wr-issue.de/beta/";
   String APIVersion = "v1/";
   var file = new FileUtils();
-  checkKey() async{
-    var data = await file.read();
-    if(await file.checkJSON(data) == true){
-      var dataDecode = jsonDecode(data);
-      if(dataDecode["key"] == null){
+
+  APICommunication() {}
+
+  Future<void> checkKey() async {
+    print("checking key...");
+      var data = await file.read();
+      if(await file.checkJSON(data) == true){
+        var dataDecode = jsonDecode(data);
+        if(dataDecode["key"] == null){
+          String url = baseUrl + APIVersion + "mobile/generateKey";
+          try {
+            var resp = await http.get(url);
+            String ans = resp.body;
+            var ansDecode = jsonDecode(ans);
+            var toWrite = {
+              "key": ansDecode["key"],
+              "token": null
+            };
+            file.write(jsonEncode(toWrite));
+            print("key added");
+          }
+          catch(e){
+            print(e);
+          }
+        }
+        else{
+          print("key already set");
+        }
+      }
+      else{
         String url = baseUrl + APIVersion + "mobile/generateKey";
         try {
           var resp = await http.get(url);
@@ -30,29 +55,10 @@ class APICommunication {
           print(e);
         }
       }
-      else{
-        print("key already set");
-      }
-    }
-    else{
-      String url = baseUrl + APIVersion + "mobile/generateKey";
-      try {
-        var resp = await http.get(url);
-        String ans = resp.body;
-        var ansDecode = jsonDecode(ans);
-        var toWrite = {
-          "key": ansDecode["key"],
-          "token": null
-        };
-        file.write(jsonEncode(toWrite));
-        print("key added");
-      }
-      catch(e){
-        print(e);
-      }
-    }
   }
-  getToken() async{
+
+  Future<void> getToken() async {
+    print("checking token...");
     var data = await file.read();
     if(await file.checkJSON(data) == true){
       var dataDecode = jsonDecode(data);
@@ -81,12 +87,12 @@ class APICommunication {
       catch(e){
         print("e");
       }
-    }
-    else{
+    } else{
       print("!!!ERROR!!!");
     }
   }
-  delToken() async{
+
+  Future<void> delToken() async{
     var data = await file.read();
     var dataDecode = jsonDecode(data);
     String url = baseUrl + APIVersion + "mobile/deleteToken";
@@ -112,7 +118,8 @@ class APICommunication {
       print(e);
     }
   }
-  sendinfo(String lat,String long,String text, File pic) async{
+
+  Future<void> sendInfo(String lat,String long,String text, File pic) async{
     var data = await file.read();
     if(await file.checkJSON(data) == true){
       var dataDecode = jsonDecode(data);
@@ -139,7 +146,7 @@ class APICommunication {
         var ansDecode = jsonDecode(ans);
         print(ansDecode["image_handshake"]);
         print("fertig");
-        imageUpload(ansDecode["image_handshake"], pic);
+        await imageUpload(ansDecode["image_handshake"], pic);
       }
       catch(e){
         print(e);
@@ -149,7 +156,8 @@ class APICommunication {
       return("!!!ERROR!!!");
     }
   }
-  imageUpload(String handshake, File pic) async{
+
+  Future<void> imageUpload(String handshake, File pic) async{
     print(pic.path);
     dio.FormData data = dio.FormData.fromMap({
       "document": await dio.MultipartFile.fromFile(

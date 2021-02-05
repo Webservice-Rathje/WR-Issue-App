@@ -112,7 +112,7 @@ class _AddIssue extends State<AddIssue> {
           String msg = TextController.text;
           await api.checkKey();
           await api.getToken();
-          await api.sendinfo(lat, long, msg, pic);
+          await api.sendInfo(lat, long, msg, pic);
 
         }, child: Text("Fehler melden", style: TextStyle(color: Colors.white),), color: Colors.pink,)
       ];
